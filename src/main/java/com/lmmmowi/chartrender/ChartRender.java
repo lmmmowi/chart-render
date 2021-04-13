@@ -49,21 +49,27 @@ public class ChartRender {
 
     private void execute(String command) throws IOException {
         Process process = Runtime.getRuntime().exec(command);
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
-            StringBuilder errorBuilder = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                errorBuilder.append(line);
-            }
-
-            String error = errorBuilder.toString();
-            if (error.length() > 0) {
-                throw new IOException(error);
-            }
+        try (BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+             BufferedReader inputReader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+            this.checkError(errorReader);
+            this.checkError(inputReader);
         } finally {
             if (process != null) {
                 process.destroy();
             }
+        }
+    }
+
+    private void checkError(BufferedReader reader) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            sb.append(line).append("\n");
+        }
+
+        String message = sb.toString();
+        if (message.length() > 0 && !message.contains("success")) {
+            throw new IOException(message);
         }
     }
 
@@ -74,6 +80,12 @@ public class ChartRender {
         String data = dataFile.getAbsolutePath();
         String output = outputFile.getAbsolutePath();
 
+        if (OsUtils.isWindows()) {
+            templateHtml = fixPath(templateHtml);
+            data = fixPath(data);
+            output = fixPath(output);
+        }
+
         return phantomJs + BLANK
                 + renderJs + BLANK
                 + templateHtml + BLANK
@@ -81,5 +93,14 @@ public class ChartRender {
                 + output + BLANK
                 + width + BLANK
                 + height + BLANK;
+    }
+
+    private String fixPath(String path) {
+        int index = path.indexOf(":");
+        if (index >= 0) {
+            path = path.substring(index + 1);
+        }
+        path = path.replace("\\", "/");
+        return path;
     }
 }

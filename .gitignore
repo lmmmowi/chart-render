@@ -19,4 +19,4 @@ target/
 *.jpg
 
 #Bin Files
-lib/phantomjs
+lib/phantomjs*
