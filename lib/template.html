@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="./echarts.min.js"></script>
+    <!-- <script src="./data.js"></script> -->
+</head>
+
+<body style="background-color: white;">
+    <div id="chart"></div>
+
+    <script type="text/javascript">
+        setTimeout(function () {
+            // 设置图片宽高
+            var chartWidth = window.chartWidth || 800;
+            var chartHeight = window.chartHeight || 400;
+            var chartDiv = document.getElementById("chart");
+            chartDiv.style.cssText = "width: " + chartWidth + "px; height: " + chartHeight + "px;";
+
+            // 禁用动画
+            option.animation = false;
+
+            var myChart = echarts.init(chartDiv);
+            myChart.setOption(option);
+        }, 100);
+    </script>
+</body>
+
+</html>
