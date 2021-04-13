@@ -1,0 +1,22 @@
+#Maven build
+*.flattened-pom.xml
+target/
+
+#IDEA
+.idea
+*.iml
+
+#Visual Studio Code
+*.project
+*.classpath
+*.factorypath
+*.settings/
+
+#Mac
+.DS_Store
+
+#Image Files
+*.jpg
+
+#Bin Files
+lib/phantomjs
